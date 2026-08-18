@@ -55,9 +55,5 @@ secrets; `.env` files are gitignored by design.
 npm unlink -g specdive
 ```
 
-## Project specs
-
-`NEW_SPECS.md` is the source of truth for this project. Code implements it.
-When code and spec disagree, update `NEW_SPECS.md` first, then the code —
-see `AGENTS.md` for the full contribution contract (code-quality rules,
+See `AGENTS.md` for the contribution contract (code-quality rules,
 the write-side-only trust model, spec-writing rules).

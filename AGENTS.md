@@ -1,8 +1,5 @@
 # AGENTS.md — specdive
 
-`NEW_SPECS.md` is the source of truth. Code implements it. When code and
-spec disagree, update `NEW_SPECS.md` first, then the code.
-
 ## Prime directive
 
 specdive is **write-side only** and **git-free**. It exposes MCP tools that
@@ -46,7 +43,7 @@ weaken it, never add "small" exceptions.
 ### 3. Simplicity first
 
 - Plain TypeScript; avoid frameworks unless required
-- Minimal dependencies (see `NEW_SPECS.md` for the approved set)
+- Minimal dependencies (see Dependencies below for the approved set)
 - No premature optimization, no DI, no factories
 
 ### 4. Readability over cleverness
@@ -216,7 +213,7 @@ Edit this block to change how this project tags commits. Re-install will not ove
 ## Dependencies
 
 - Minimal; prefer Node built-ins
-- Approved set (per `NEW_SPECS.md`): `commander`, `gray-matter`, `express`,
+- Approved set: `commander`, `gray-matter`, `express`,
   `chokidar`, `@modelcontextprotocol/sdk`
 - Frontend is lightweight HTML/JS + inline SVG (no React, no bundler) to
   keep the build as a single `tsc` step

@@ -7,6 +7,8 @@ export const STATUS_VALUES: readonly Status[] = ["done", "backlog"] as const;
 export interface SpecCommit {
   sha: string;
   message: string;
+  author?: string;
+  committed_at?: string;
 }
 
 /** Structured frontmatter of a spec markdown file. */
@@ -56,6 +58,8 @@ export interface TagCommitInput {
   sha: string;
   message: string;
   ids: string[];
+  author?: string;
+  committed_at?: string;
 }
 
 /** The derived state index, rebuilt from specs on change. */

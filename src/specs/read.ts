@@ -17,20 +17,22 @@ export function readSpec(specdiveDir: string, id: string): Spec {
   return parseSpec(text, file);
 }
 
-/** Returns the summaries of all specs, sorted by id. */
-export function readAllSummaries(specdiveDir: string): SpecSummary[] {
+/** Reads every parsable spec; skips unreadable files so listing does not abort. */
+export function readAllSpecs(specdiveDir: string): Spec[] {
   return listSpecIds(specdiveDir)
     .map((id) => {
       try {
         return readSpec(specdiveDir, id);
       } catch {
-        // Skip unreadable files; listing must not abort on one bad spec.
         return null;
       }
     })
-    .filter((s): s is Spec => s !== null)
-    .map(toSummary)
-    .sort(byId);
+    .filter((s): s is Spec => s !== null);
+}
+
+/** Returns the summaries of all specs, sorted by id. */
+export function readAllSummaries(specdiveDir: string): SpecSummary[] {
+  return readAllSpecs(specdiveDir).map(toSummary).sort(byId);
 }
 
 /** Lists spec summaries, optionally filtered by status. */

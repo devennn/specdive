@@ -9,8 +9,18 @@ depends_on: []
 commits:
   - sha: 32dbf00b17e7e52aaef0d84cd37669661575d84b
     message: Initial commit of specdive.
+    author: Deven
+    committed_at: '2026-08-18T10:39:52+08:00'
+  - sha: 878a3ed3f0a359a94078e1f12b56d53fca2a69f9
+    message: Track Cursor and OpenCode MCP configs in git.
+    author: Deven
+    committed_at: '2026-08-18T10:43:04+08:00'
+  - sha: 3e3656ec042cf53a6769ccf126046ac38223a266
+    message: Drop NEW_SPECS.md and slim the README.
+    author: Deven
+    committed_at: '2026-08-18T10:49:20+08:00'
 updated_by: cursor
-updated_at: '2026-08-18T02:40:24.540Z'
+updated_at: '2026-08-18T06:28:45.365Z'
 ---
 ## Summary
 `specdive install --target <cursor|opencode>` wires the

@@ -37,6 +37,11 @@ export function renderPage(name: string): string {
         <h1>${title}</h1>
       </div>
       <span class="divider"></span>
+      <nav class="view-switch" role="tablist" aria-label="Views">
+        <button type="button" id="view-history" class="view-switch-btn active" role="tab" aria-selected="true">History</button>
+        <button type="button" id="view-specs" class="view-switch-btn" role="tab" aria-selected="false">Specs</button>
+      </nav>
+      <span class="divider"></span>
       <span id="status-pill" class="status-pill" title="MCP status — click to recheck">
         <span class="status-dot"></span><span class="status-label">checking…</span>
       </span>
@@ -44,18 +49,17 @@ export function renderPage(name: string): string {
     </div>
     <span class="toolbar">
       <span class="info-tip" title="About this view" aria-label="About this view">i
-        <span class="info-tip-pop">specdive shows feature specs written by your AI assistant.
-          <strong>Done</strong> = done; <strong>Backlog</strong> = not done.
-          Issues and security notes live in each spec's detail.</span>
+        <span id="info-tip-pop" class="info-tip-pop">A timeline of git commits tagged onto specs. Click a feature chip to open that spec.</span>
       </span>
       <button id="theme-toggle" class="theme-toggle" title="Toggle theme" aria-label="Toggle theme"></button>
     </span>
   </header>
-  <div id="layout" class="layout">
+  <div id="layout" class="layout" hidden>
     <div id="list" class="list"></div>
     <div id="detail" class="detail"><div class="detail-placeholder"><p>Select a feature to see its spec.</p></div></div>
     <nav id="toc" class="toc" hidden></nav>
   </div>
+  <div id="history" class="history"></div>
   <script>${APP_SCRIPT}</script>
 </body>
 </html>

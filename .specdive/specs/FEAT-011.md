@@ -21,8 +21,14 @@ depends_on:
 commits:
   - sha: 32dbf00b17e7e52aaef0d84cd37669661575d84b
     message: Initial commit of specdive.
+    author: Deven
+    committed_at: '2026-08-18T10:39:52+08:00'
+  - sha: 878a3ed3f0a359a94078e1f12b56d53fca2a69f9
+    message: Track Cursor and OpenCode MCP configs in git.
+    author: Deven
+    committed_at: '2026-08-18T10:43:04+08:00'
 updated_by: cursor
-updated_at: '2026-08-18T02:40:24.543Z'
+updated_at: '2026-08-18T06:28:45.394Z'
 ---
 ## Summary
 
@@ -35,10 +41,12 @@ git-free: the agent supplies the SHA.
 
 - `specdive_tag_commit({sha, message, ids})` appends `{ sha, message }`
   to each listed spec's frontmatter `commits`. One call tags the same
-  commit onto multiple specs.
+  commit onto multiple specs. Optional `author` and `committed_at` are
+  stored when supplied.
 - SHA is 7–64 hex chars (full or abbreviated); stored lowercase. The
   commit subject is the first line of `message`.
-- Re-tagging the same SHA on the same spec is a no-op. Missing
+- Re-tagging the same SHA on the same spec is a no-op, except it fills
+  missing `author` / `committed_at` when those are supplied. Missing
   `commits` on older specs parses as `[]`.
 - `.specdive/INSTRUCTIONS.md` tells the assistant to call
   `specdive_tag_commit` after every git commit it creates.
@@ -74,3 +82,4 @@ git-free: the agent supplies the SHA.
 - 2026-08-17: Implemented `specdive_tag_commit`, frontmatter `commits`,
   INSTRUCTIONS + AGENTS.md commit-tag block, and Commits in the PM
   detail panel.
+- 2026-08-18: Re-tag fills missing author and committed_at on an existing SHA. Tagged this month's git commits onto the specs they touched.

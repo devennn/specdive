@@ -6,6 +6,7 @@ import { renderPage } from "./html.js";
 import { ICON_SVG } from "./icon.js";
 import { loadState } from "../specs/state.js";
 import { readSpec, isInitialized } from "../specs/read.js";
+import { loadActivity } from "../specs/activity.js";
 import { projectName } from "../specs/config.js";
 import { checkStatus } from "../cli/status.js";
 import { paths, SPECDIVE_DIR } from "../io/paths.js";
@@ -39,6 +40,10 @@ export function startViewServer(opts: ViewOptions): Promise<Server> {
 
   app.get("/api/specs", (_req, res) => {
     res.json(loadState(specdiveDir));
+  });
+
+  app.get("/api/activity", (_req, res) => {
+    res.json(loadActivity(specdiveDir));
   });
 
   app.get("/api/status", async (_req: Request, res: Response) => {

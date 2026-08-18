@@ -12,8 +12,10 @@ depends_on:
 commits:
   - sha: 32dbf00b17e7e52aaef0d84cd37669661575d84b
     message: Initial commit of specdive.
+    author: Deven
+    committed_at: '2026-08-18T10:39:52+08:00'
 updated_by: cursor
-updated_at: '2026-08-18T02:40:24.542Z'
+updated_at: '2026-08-18T06:28:45.370Z'
 ---
 ## Summary
 Tells the PM (and developer) whether the specdive MCP server is installed

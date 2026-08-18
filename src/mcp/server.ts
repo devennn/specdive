@@ -78,14 +78,22 @@ export function createServer(): McpServer {
 
   server.registerTool("specdive_tag_commit", {
     description:
-      "Tag one git commit onto one or more specs. Call after you create a commit. One commit may touch multiple features — pass every FEAT-NNN id it affects. specdive does not run git; you supply the SHA.",
+      "Tag one git commit onto one or more specs. Call after you create a commit. One commit may touch multiple features — pass every FEAT-NNN id it affects. specdive does not run git; you supply the SHA, subject, author, and commit time.",
     inputSchema: {
       sha: z.string().describe("Git commit SHA (full or abbreviated hex)"),
       message: z.string().describe("Commit subject line"),
       ids: z.array(z.string()).describe("FEAT-NNN spec ids this commit touches (one or more)"),
+      author: z.string().optional().describe("Commit author name (git %an). If omitted, stamped as the MCP host."),
+      committed_at: z.string().optional().describe("Commit time as ISO-8601 (git %aI). If omitted, stamped now."),
     },
   }, (args) =>
-    wrap(() => handleTagCommit({ sha: args.sha, message: args.message, ids: args.ids })),
+    wrap(() => handleTagCommit({
+      sha: args.sha,
+      message: args.message,
+      ids: args.ids,
+      author: args.author,
+      committed_at: args.committed_at,
+    })),
   );
 
   server.registerTool("specdive_list_specs", {

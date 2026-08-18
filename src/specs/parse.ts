@@ -128,18 +128,32 @@ function parseCommit(item: unknown, file: string, i: number): SpecCommit {
   if (!isCommitSha(sha)) {
     throw new SpecParseError(file, `commits[${i}].sha must be a git SHA, got "${sha}"`);
   }
-  const message = commitString(fields.message, file, i, "message");
-  return { sha: normalizeSha(sha), message };
+  const commit: SpecCommit = {
+    sha: normalizeSha(sha),
+    message: commitString(fields.message, file, i, "message"),
+  };
+  const author = optionalCommitString(fields.author, file, i, "author");
+  if (author !== undefined) commit.author = author;
+  const at = optionalCommitString(fields.committed_at, file, i, "committed_at");
+  if (at !== undefined) commit.committed_at = at;
+  return commit;
 }
 
 interface CommitFields {
   sha: unknown;
   message: unknown;
+  author: unknown;
+  committed_at: unknown;
 }
 
 function commitFields(item: object): CommitFields {
   const rec = item as CommitFields;
-  return { sha: rec.sha, message: rec.message };
+  return {
+    sha: rec.sha,
+    message: rec.message,
+    author: rec.author,
+    committed_at: rec.committed_at,
+  };
 }
 
 function commitString(
@@ -152,4 +166,14 @@ function commitString(
     throw new SpecParseError(file, `commits[${i}].${key} must be a non-empty string`);
   }
   return value;
+}
+
+function optionalCommitString(
+  value: unknown,
+  file: string,
+  i: number,
+  key: string,
+): string | undefined {
+  if (value === undefined || value === null) return undefined;
+  return commitString(value, file, i, key);
 }

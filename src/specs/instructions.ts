@@ -25,13 +25,14 @@ The line: Polish/enhancement = Known Issues → done. Breaks-in-normal-use → b
 export const COMMIT_TAG_MD = `## Specdive commit tagging
 
 After every git commit you create in this repo, call \`specdive_tag_commit\`
-with the new SHA, the commit subject, and every \`FEAT-NNN\` spec the
-commit touches. One commit may tag multiple specs when the diff spans
-features.
+with the new SHA, the commit subject, the author, the commit time
+(ISO-8601), and every \`FEAT-NNN\` spec the commit touches. One commit
+may tag multiple specs when the diff spans features.
 
 Do this as part of committing — don't ask the user, don't skip it.
 Use \`specdive_list_specs\` and the diff to pick ids. specdive does not
-run git; you pass the SHA you just created.`;
+run git; you pass the SHA, author, and time from the commit you just
+created.`;
 
 /** The AI-assistant behavior contract, written to `.specdive/INSTRUCTIONS.md` and returned by `specdive_init`. */
 export const INSTRUCTIONS_MD = `# Specdive instructions for AI assistants
@@ -70,10 +71,11 @@ export const INSTRUCTIONS_MD = `# Specdive instructions for AI assistants
   Don't ask the user to do this manually.
 
 - After every git commit you create, call specdive_tag_commit with the
-  new SHA, the commit subject, and every FEAT-NNN spec the commit
-  touches. One commit may tag multiple specs. Do this as part of the
-  commit — don't ask the user. specdive does not run git; you pass the
-  SHA you just created.
+  new SHA, the commit subject, the author, the commit time (ISO-8601),
+  and every FEAT-NNN spec the commit touches. One commit may tag
+  multiple specs. Do this as part of the commit — don't ask the user.
+  specdive does not run git; you pass the SHA, author, and time from
+  the commit you just created.
 
 - \`.specdive/\` already exists and you need the current INSTRUCTIONS →
   call specdive_update. Do not call specdive_init (it will fail).
@@ -100,6 +102,8 @@ depends_on: [FEAT-001]
 commits:
   - sha: a1b2c3d4e5f6789012345678901234567890abcd
     message: Add oauth callback validation
+    author: cursor
+    committed_at: 2026-08-13T10:22:00Z
 updated_by: opencode
 updated_at: 2026-08-13T10:22:00Z
 ---

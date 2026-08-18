@@ -5,6 +5,10 @@ let selectedId = null;
 let mcpConnected = false;
 let tocScroll = null;
 let listTab = 'done';
+let pageView = 'history';
+let activityEvents = [];
+let historyPage = 0;
+const HISTORY_PAGE_SIZE = 5;
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;' }[c]));
@@ -13,12 +17,16 @@ async function init() {
   initTheme();
   readUrl();
   await loadSpecs();
-  restoreHash();
+  await loadActivity();
   setupSSE();
   setupInfoTip();
   loadStatus();
   $('status-pill').addEventListener('click', () => loadStatus());
   $('theme-toggle').addEventListener('click', toggleTheme);
+  $('view-specs').addEventListener('click', () => setPageView('specs'));
+  $('view-history').addEventListener('click', () => setPageView('history'));
+  await setPageView(pageView);
+  restoreHash();
 }
 
 function readUrl() {
@@ -26,15 +34,19 @@ function readUrl() {
   const tab = q.get('tab');
   if (tab === 'done' || tab === 'backlog') listTab = tab;
   selectedId = q.get('id');
+  pageView = q.get('view') === 'specs' || selectedId ? 'specs' : 'history';
 }
 
 /** Keeps the address bar in sync so refresh (and copied links) restore this view. */
 function writeUrl(hash) {
   const q = new URLSearchParams();
-  if (listTab !== 'done') q.set('tab', listTab);
-  if (selectedId) q.set('id', selectedId);
+  if (pageView === 'specs') {
+    q.set('view', 'specs');
+    if (listTab !== 'done') q.set('tab', listTab);
+    if (selectedId) q.set('id', selectedId);
+  }
   const search = q.toString();
-  const h = hash === undefined ? location.hash : hash;
+  const h = pageView === 'history' ? '' : (hash === undefined ? location.hash : hash);
   const path = location.pathname
     + (search ? '?' + search : '')
     + (h && h !== '#' ? (h.charAt(0) === '#' ? h : '#' + h) : '');
@@ -121,23 +133,36 @@ async function loadSpecs() {
   const r = await fetch('/api/specs');
   allSpecs = (await r.json()).specs || [];
   renderList();
-  if (selectedId) await renderDetail(selectedId);
+  if (pageView === 'specs' && selectedId) await renderDetail(selectedId);
+}
+
+async function loadActivity() {
+  const r = await fetch('/api/activity');
+  activityEvents = (await r.json()).events || [];
+  if (pageView === 'history') renderHistory();
 }
 
 function setupSSE() {
   const es = new EventSource('/api/events');
-  es.addEventListener('change', () => loadSpecs());
+  es.addEventListener('change', () => {
+    loadSpecs();
+    loadActivity();
+  });
   es.onerror = () => { es.close(); setTimeout(setupSSE, 3000); };
 }
 
 function renderList() {
-  if (allSpecs.length === 0) { renderEmpty(); $('count').textContent = '0 specs'; return; }
+  if (allSpecs.length === 0) {
+    renderEmpty();
+    if (pageView !== 'history') setCount(0, 'spec');
+    return;
+  }
   const done = allSpecs.filter(s => s.status === 'done').sort(byLatest);
   const backlog = allSpecs.filter(s => s.status !== 'done').sort(byLatest);
   const specs = listTab === 'done' ? done : backlog;
   $('list').innerHTML = tabBar(done.length, backlog.length)
     + '<div class="list-body">' + listItems(specs) + '</div>';
-  $('count').textContent = allSpecs.length + (allSpecs.length === 1 ? ' spec' : ' specs');
+  if (pageView !== 'history') setCount(allSpecs.length, 'spec');
   bindList();
 }
 
@@ -197,6 +222,10 @@ async function select(id) {
     renderList();
   } else {
     document.querySelectorAll('.item').forEach(el => el.classList.toggle('active', el.dataset.id === id));
+  }
+  if (pageView !== 'specs') {
+    await setPageView('specs');
+    return;
   }
   await renderDetail(id);
   window.scrollTo(0, 0);
@@ -444,6 +473,155 @@ function setupInfoTip() {
     t.addEventListener('click', (e) => { e.stopPropagation(); t.classList.toggle('open'); });
   });
   document.addEventListener('click', () => document.querySelectorAll('.info-tip').forEach(t => t.classList.remove('open')));
+}
+
+const SPECS_TIP = 'specdive shows feature specs written by your AI assistant. <strong>Done</strong> = done; <strong>Backlog</strong> = not done. Issues and security notes live in each spec\\'s detail.';
+const HISTORY_TIP = 'A timeline of git commits tagged onto specs. Click a feature chip to open that spec.';
+
+function setInfoTip(html) {
+  const pop = $('info-tip-pop');
+  if (pop) pop.innerHTML = html;
+}
+
+function setCount(n, word) {
+  $('count').textContent = n + (n === 1 ? ' ' + word : ' ' + word + 's');
+}
+
+async function setPageView(view) {
+  pageView = view;
+  $('view-specs').classList.toggle('active', view === 'specs');
+  $('view-history').classList.toggle('active', view === 'history');
+  $('view-specs').setAttribute('aria-selected', String(view === 'specs'));
+  $('view-history').setAttribute('aria-selected', String(view === 'history'));
+  $('layout').hidden = view === 'history';
+  $('history').hidden = view !== 'history';
+  if (view === 'history') {
+    $('toc').hidden = true;
+    $('layout').classList.remove('has-toc');
+    renderHistory();
+    setInfoTip(HISTORY_TIP);
+    writeUrl('');
+    return;
+  }
+  setCount(allSpecs.length, 'spec');
+  setInfoTip(SPECS_TIP);
+  const open = selectedId && allSpecs.some(s => s.id === selectedId) ? selectedId : defaultSpecId();
+  if (open) {
+    await select(open);
+    return;
+  }
+  showPlaceholder();
+  writeUrl('');
+}
+
+function defaultSpecId() {
+  const done = allSpecs.filter(s => s.status === 'done').sort(byLatest);
+  if (done.length) return done[0].id;
+  const backlog = allSpecs.filter(s => s.status !== 'done').sort(byLatest);
+  return backlog.length ? backlog[0].id : null;
+}
+
+function renderHistory() {
+  setCount(activityEvents.length, 'commit');
+  if (activityEvents.length === 0) {
+    $('history').innerHTML = '<div class="history-inner">'
+      + '<div class="history-head"><h1>History</h1><span class="sub">Git activity across features</span></div>'
+      + '<p class="history-empty">No tagged commits yet.</p>'
+      + '</div>';
+    return;
+  }
+  const days = groupByDay(activityEvents);
+  const pageCount = Math.max(1, Math.ceil(days.length / HISTORY_PAGE_SIZE));
+  if (historyPage >= pageCount) historyPage = pageCount - 1;
+  const start = historyPage * HISTORY_PAGE_SIZE;
+  const slice = days.slice(start, start + HISTORY_PAGE_SIZE);
+  $('history').innerHTML = '<div class="history-inner">'
+    + '<div class="history-head"><h1>History</h1><span class="sub">Git activity across features</span></div>'
+    + slice.map(historyDay).join('')
+    + historyPager(pageCount)
+    + '</div>';
+  $('history').querySelectorAll('.history-spec').forEach(el => {
+    el.addEventListener('click', () => select(el.dataset.id));
+  });
+  bindHistoryPager();
+}
+
+function historyPager(pageCount) {
+  if (pageCount <= 1) return '';
+  return '<nav class="history-pager">'
+    + '<button type="button" class="history-page-btn" data-dir="-1"' + (historyPage === 0 ? ' disabled' : '') + '>Newer</button>'
+    + '<span class="history-page-n">' + (historyPage + 1) + ' / ' + pageCount + '</span>'
+    + '<button type="button" class="history-page-btn" data-dir="1"' + (historyPage >= pageCount - 1 ? ' disabled' : '') + '>Older</button>'
+    + '</nav>';
+}
+
+function bindHistoryPager() {
+  $('history').querySelectorAll('.history-page-btn').forEach(el => {
+    el.addEventListener('click', () => {
+      historyPage += Number(el.dataset.dir);
+      renderHistory();
+      window.scrollTo(0, 0);
+    });
+  });
+}
+
+function groupByDay(items) {
+  const groups = [];
+  items.forEach(item => {
+    const at = item.committed_at;
+    const key = at ? localDayKey(new Date(at)) : 'untimed';
+    const last = groups[groups.length - 1];
+    if (last && last.key === key) last.items.push(item);
+    else groups.push({ key, label: at ? dayLabel(at) : 'Untimed', items: [item] });
+  });
+  return groups;
+}
+
+function historyDay(group) {
+  return '<section class="history-day">'
+    + '<h2 class="history-day-label">' + esc(group.label) + '</h2>'
+    + '<div class="history-group">' + group.items.map(historyItem).join('') + '</div>'
+    + '</section>';
+}
+
+function historyItem(item) {
+  const short = String(item.sha || '').slice(0, 7);
+  const chips = (item.specs || []).map(s => {
+    return '<button type="button" class="history-spec" data-id="' + esc(s.id) + '" title="' + esc(s.title) + '">' + esc(s.id) + '</button>';
+  }).join('');
+  const at = item.committed_at || '';
+  const author = item.author ? '<span>' + esc(item.author) + '</span>' : '';
+  return '<article class="history-item">'
+    + '<div class="history-rail"><span class="history-dot"></span></div>'
+    + '<time class="history-time"' + (at ? ' datetime="' + esc(at) + '"' : '') + '>' + (at ? esc(fmtTime(at)) : '') + '</time>'
+    + '<div class="history-body">'
+    + '<h3 class="history-msg">' + esc(item.message) + '</h3>'
+    + '<div class="history-meta"><span class="sha" title="' + esc(item.sha) + '">' + esc(short) + '</span>'
+    + author + '</div>'
+    + (chips ? '<div class="history-specs">' + chips + '</div>' : '')
+    + '</div></article>';
+}
+
+function localDayKey(d) {
+  const p = (n) => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+
+function dayLabel(iso) {
+  const d = new Date(iso);
+  const today = new Date();
+  const yest = new Date(today);
+  yest.setDate(today.getDate() - 1);
+  const key = localDayKey(d);
+  if (key === localDayKey(today)) return 'Today';
+  if (key === localDayKey(yest)) return 'Yesterday';
+  return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function fmtTime(iso) {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
 }
 
 init();

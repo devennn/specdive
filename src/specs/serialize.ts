@@ -1,5 +1,5 @@
 import matter from "gray-matter";
-import type { Spec, SpecFrontmatter } from "./types.js";
+import type { Spec, SpecCommit, SpecFrontmatter } from "./types.js";
 
 /**
  * Builds a frontmatter object in canonical key order. gray-matter (js-yaml)
@@ -14,7 +14,7 @@ export function toFrontmatter(fm: SpecFrontmatter): SpecFrontmatter {
     status: fm.status,
     source_files: fm.source_files,
     depends_on: fm.depends_on,
-    commits: fm.commits,
+    commits: fm.commits.map(orderedCommit),
     updated_by: fm.updated_by,
     updated_at: fm.updated_at,
   };
@@ -28,4 +28,12 @@ export function toFrontmatter(fm: SpecFrontmatter): SpecFrontmatter {
  */
 export function serializeSpec(spec: Spec): string {
   return matter.stringify(spec.body, toFrontmatter(spec.frontmatter));
+}
+
+/** Canonical commit key order; omits unset optional fields. */
+function orderedCommit(c: SpecCommit): SpecCommit {
+  const out: SpecCommit = { sha: c.sha, message: c.message };
+  if (c.author !== undefined) out.author = c.author;
+  if (c.committed_at !== undefined) out.committed_at = c.committed_at;
+  return out;
 }

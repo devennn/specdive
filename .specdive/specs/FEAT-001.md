@@ -15,8 +15,12 @@ commits:
     message: Initial commit of specdive.
     author: Deven
     committed_at: '2026-08-18T10:39:52+08:00'
+  - sha: 530340883ce3ddcddab281b9d8e02fc30a96cea9
+    message: Add a History view of tagged commits as the default PM page.
+    author: Deven Yantis
+    committed_at: '2026-08-18T14:55:13+08:00'
 updated_by: cursor
-updated_at: '2026-08-18T06:28:45.360Z'
+updated_at: '2026-08-18T06:56:26.193Z'
 ---
 ## Summary
 The in-memory and on-disk representation of a feature spec — YAML

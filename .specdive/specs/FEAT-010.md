@@ -11,8 +11,11 @@ depends_on:
   - FEAT-004
   - FEAT-005
   - FEAT-006
-updated_by: mcp
-updated_at: '2026-08-13T08:49:11.070Z'
+commits:
+  - sha: 32dbf00b17e7e52aaef0d84cd37669661575d84b
+    message: Initial commit of specdive.
+updated_by: cursor
+updated_at: '2026-08-18T02:40:24.542Z'
 ---
 ## Summary
 The `specdive` CLI built on commander that dispatches the `init`,

@@ -9,8 +9,11 @@ source_files:
 depends_on:
   - FEAT-004
   - FEAT-006
+commits:
+  - sha: 32dbf00b17e7e52aaef0d84cd37669661575d84b
+    message: Initial commit of specdive.
 updated_by: cursor
-updated_at: '2026-08-18T01:22:00.000Z'
+updated_at: '2026-08-18T02:40:24.542Z'
 ---
 ## Summary
 Tells the PM (and developer) whether the specdive MCP server is installed

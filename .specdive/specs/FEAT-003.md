@@ -9,8 +9,11 @@ source_files:
   - src/specs/instructions.ts
 depends_on:
   - FEAT-002
+commits:
+  - sha: 32dbf00b17e7e52aaef0d84cd37669661575d84b
+    message: Initial commit of specdive.
 updated_by: cursor
-updated_at: '2026-08-17T02:44:00.000Z'
+updated_at: '2026-08-18T02:40:24.540Z'
 ---
 ## Summary
 `specdive init` creates `.specdive/` from scratch. `specdive update`

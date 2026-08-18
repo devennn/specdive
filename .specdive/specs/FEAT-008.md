@@ -7,8 +7,11 @@ source_files:
   - src/view/app-script.ts
 depends_on:
   - FEAT-006
-updated_by: mcp
-updated_at: '2026-08-13T08:49:05.348Z'
+commits:
+  - sha: 32dbf00b17e7e52aaef0d84cd37669661575d84b
+    message: Initial commit of specdive.
+updated_by: cursor
+updated_at: '2026-08-18T02:40:24.541Z'
 ---
 ## Summary
 Keeps the PM view live without a manual refresh: a chokidar watcher on

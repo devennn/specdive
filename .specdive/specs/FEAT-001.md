@@ -10,8 +10,11 @@ source_files:
   - src/specs/read.ts
   - src/specs/commits.ts
 depends_on: []
-updated_by: mcp
-updated_at: '2026-08-13T08:48:40.674Z'
+commits:
+  - sha: 32dbf00b17e7e52aaef0d84cd37669661575d84b
+    message: Initial commit of specdive.
+updated_by: cursor
+updated_at: '2026-08-18T02:40:24.538Z'
 ---
 ## Summary
 The in-memory and on-disk representation of a feature spec — YAML

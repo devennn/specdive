@@ -11,8 +11,11 @@ depends_on:
   - FEAT-001
   - FEAT-002
   - FEAT-003
+commits:
+  - sha: 32dbf00b17e7e52aaef0d84cd37669661575d84b
+    message: Initial commit of specdive.
 updated_by: cursor
-updated_at: '2026-08-18T01:27:00.000Z'
+updated_at: '2026-08-18T02:40:24.540Z'
 ---
 ## Summary
 The stdio MCP server that exposes specdive's write-side tools to an

@@ -12,8 +12,11 @@ source_files:
   - src/cli/view.ts
 depends_on:
   - FEAT-001
+commits:
+  - sha: 32dbf00b17e7e52aaef0d84cd37669661575d84b
+    message: Initial commit of specdive.
 updated_by: cursor
-updated_at: '2026-08-14T09:24:00.000Z'
+updated_at: '2026-08-18T02:40:24.541Z'
 ---
 ## Summary
 `specdive view` starts a local express server (default 127.0.0.1:4747)

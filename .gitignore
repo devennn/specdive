@@ -17,6 +17,3 @@ dist/
 
 # OS
 .DS_Store
-
-.opencode.json
-.cursor/mcp.json

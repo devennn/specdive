@@ -6,8 +6,11 @@ source_files:
   - src/cli/install.ts
   - src/cli/agent-instructions.ts
 depends_on: []
-updated_by: mcp
-updated_at: '2026-08-14T08:55:00.000Z'
+commits:
+  - sha: 32dbf00b17e7e52aaef0d84cd37669661575d84b
+    message: Initial commit of specdive.
+updated_by: cursor
+updated_at: '2026-08-18T02:40:24.540Z'
 ---
 ## Summary
 `specdive install --target <cursor|opencode>` wires the

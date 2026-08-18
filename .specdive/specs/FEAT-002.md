@@ -12,8 +12,11 @@ source_files:
   - src/specs/state.ts
 depends_on:
   - FEAT-001
-updated_by: mcp
-updated_at: '2026-08-13T08:48:45.584Z'
+commits:
+  - sha: 32dbf00b17e7e52aaef0d84cd37669661575d84b
+    message: Initial commit of specdive.
+updated_by: cursor
+updated_at: '2026-08-18T02:40:24.539Z'
 ---
 ## Summary
 The mutation path for spec state — `create`, `update_status`,

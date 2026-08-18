@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "specdive": {
+      "type": "local",
+      "command": [
+        "npx",
+        "specdive",
+        "mcp"
+      ],
+      "enabled": true
+    }
+  }
+}

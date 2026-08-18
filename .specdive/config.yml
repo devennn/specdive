@@ -1,0 +1,5 @@
+# specdive project config
+# Specdive is AI-first and git-free: the AI assistant writes spec state via
+# MCP tools; this file just holds optional project-level settings.
+
+project: ""          # shown in the PM view as "{project} Specs"

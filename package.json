@@ -1,0 +1,46 @@
+{
+  "name": "specdive",
+  "version": "0.1.0",
+  "description": "AI-native project management layer: MCP tools let an AI coding assistant write spec state into .specdive/, and a local webpage gives PMs a live view.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "specdive": "./dev.js"
+  },
+  "publishConfig": {
+    "bin": {
+      "specdive": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsx src/index.ts",
+    "prepublishOnly": "npm run build",
+    "test": "node --test --import tsx tests/*.test.ts"
+  },
+  "keywords": [
+    "specs",
+    "project-management",
+    "mcp",
+    "ai",
+    "cli"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "chokidar": "^4.0.1",
+    "commander": "^12.1.0",
+    "express": "^4.21.1",
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

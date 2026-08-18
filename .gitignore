@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Secrets — never committed
+.env
+.env.*
+!.env.example
+
+# specdive runtime cache
+.specdive/cache/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+.opencode.json
+.cursor/mcp.json

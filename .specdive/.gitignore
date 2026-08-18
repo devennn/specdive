@@ -1,0 +1,3 @@
+# Disposable derived cache — never commit.
+state.json
+cache/

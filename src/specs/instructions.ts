@@ -34,6 +34,20 @@ Use \`specdive_list_specs\` and the diff to pick ids. specdive does not
 run git; you pass the SHA, author, and time from the commit you just
 created.`;
 
+/** Canonical PM-sync instruction — default in INSTRUCTIONS.md and the host agent file. */
+export const PM_SYNC_MD = `## Specdive project-management sync
+
+When you start or complete work on a spec (call \`specdive_update_status\`
+and \`specdive_log_progress\`), also update the matching task in the
+user's other project-management software (ClickUp, Linear, Jira, GitHub
+Issues, or similar) if a connector is already available in this session
+— an MCP server, CLI, or other tool the host has connected.
+
+If no such tool is connected, or you cannot find a matching task,
+proceed with the specdive write and do not ask the user to connect a
+tracker. Do not fail the task because the tracker update failed.
+specdive does not talk to those tools; you do.`;
+
 /** The AI-assistant behavior contract, written to `.specdive/INSTRUCTIONS.md` and returned by `specdive_init`. */
 export const INSTRUCTIONS_MD = `# Specdive instructions for AI assistants
 
@@ -68,7 +82,9 @@ export const INSTRUCTIONS_MD = `# Specdive instructions for AI assistants
 
 - Ongoing work: when you finish or start a meaningful chunk of work on
   a feature, call specdive_update_status and specdive_log_progress.
-  Don't ask the user to do this manually.
+  Don't ask the user to do this manually. If a project-management
+  connector is available in this session (ClickUp, Linear, Jira, etc.),
+  update the matching remote task too. If none is connected, proceed.
 
 - After every git commit you create, call specdive_tag_commit with the
   new SHA, the commit subject, the author, the commit time (ISO-8601),
@@ -85,6 +101,10 @@ Status values: done | backlog
 ${STATUS_RULE_MD}
 
 If the host AGENTS.md contains a \`<!-- specdive:status-rule -->\` block, follow that over this default.
+
+${PM_SYNC_MD}
+
+If the host AGENTS.md contains a \`<!-- specdive:pm-sync -->\` block, follow that over this default.
 
 ## Spec file layout
 

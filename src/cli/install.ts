@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync, renameSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
-import { injectCommitTag, injectStatusRule } from "./agent-instructions.js";
+import { injectCommitTag, injectPmSync, injectStatusRule } from "./agent-instructions.js";
 
 export type InstallTarget = "cursor" | "opencode";
 
@@ -52,8 +52,7 @@ function targetSpec(target: InstallTarget): TargetSpec {
 }
 
 /** Wires the specdive MCP server into the target host's config file and
- *  injects the Spec Status Decision Rule and commit-tag instruction into
- *  the host agent instruction file. */
+ *  injects missing AGENTS.md blocks (status rule, commit-tag, pm-sync). */
 export function installCommand(target: string): void {
   if (!isInstallTarget(target)) {
     throw new Error(
@@ -92,6 +91,12 @@ export function installCommand(target: string): void {
     commit.injected
       ? `[specdive] injected commit-tag instruction into ${commit.file}`
       : `[specdive] ${commit.file} already has a specdive commit-tag instruction (left unchanged)`,
+  );
+  const pm = injectPmSync();
+  console.log(
+    pm.injected
+      ? `[specdive] injected pm-sync instruction into ${pm.file}`
+      : `[specdive] ${pm.file} already has a specdive pm-sync instruction (left unchanged)`,
   );
 }
 

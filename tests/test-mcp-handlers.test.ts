@@ -146,6 +146,7 @@ test("CLI init --target opencode scaffolds .specdive/ and writes the host config
     assert.ok(existsSync("AGENTS.md"), "status rule injected for opencode");
     assert.match(readFileSync("AGENTS.md", "utf8"), /specdive:status-rule/);
     assert.match(readFileSync("AGENTS.md", "utf8"), /specdive:commit-tag/);
+    assert.match(readFileSync("AGENTS.md", "utf8"), /specdive:pm-sync/);
   });
 });
 
@@ -184,6 +185,7 @@ test("MCP specdive_update refreshes INSTRUCTIONS and injects AGENTS.md", () => {
     assert.ok(payload.instructions.includes("Specdive instructions"));
     assert.ok(existsSync("AGENTS.md"));
     assert.match(readFileSync("AGENTS.md", "utf8"), /specdive:commit-tag/);
+    assert.match(readFileSync("AGENTS.md", "utf8"), /specdive:pm-sync/);
   });
 });
 

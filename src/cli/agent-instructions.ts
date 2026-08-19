@@ -1,10 +1,12 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { COMMIT_TAG_MD, STATUS_RULE_MD } from "../specs/instructions.js";
+import { COMMIT_TAG_MD, PM_SYNC_MD, STATUS_RULE_MD } from "../specs/instructions.js";
 
 export const STATUS_RULE_START = "<!-- specdive:status-rule -->";
 export const STATUS_RULE_END = "<!-- /specdive:status-rule -->";
 export const COMMIT_TAG_START = "<!-- specdive:commit-tag -->";
 export const COMMIT_TAG_END = "<!-- /specdive:commit-tag -->";
+export const PM_SYNC_START = "<!-- specdive:pm-sync -->";
+export const PM_SYNC_END = "<!-- /specdive:pm-sync -->";
 export const AGENT_INSTRUCTION_FILE = "AGENTS.md";
 
 export interface AgentBlockInjectResult {
@@ -28,6 +30,14 @@ export function injectStatusRule(): AgentBlockInjectResult {
  */
 export function injectCommitTag(): AgentBlockInjectResult {
   return injectBlock(COMMIT_TAG_START, commitTagBlock());
+}
+
+/**
+ * Inserts the project-management sync instruction into AGENTS.md if the
+ * marked block is absent. Does not overwrite an existing block.
+ */
+export function injectPmSync(): AgentBlockInjectResult {
+  return injectBlock(PM_SYNC_START, pmSyncBlock());
 }
 
 function injectBlock(startMarker: string, block: string): AgentBlockInjectResult {
@@ -55,6 +65,15 @@ function commitTagBlock(): string {
     COMMIT_TAG_END,
     COMMIT_TAG_MD,
     "Edit this block to change how this project tags commits. Re-install will not overwrite it.",
+  );
+}
+
+function pmSyncBlock(): string {
+  return markedBlock(
+    PM_SYNC_START,
+    PM_SYNC_END,
+    PM_SYNC_MD,
+    "Edit this block to change how this project syncs with other trackers. Re-install will not overwrite it.",
   );
 }
 

@@ -29,9 +29,10 @@ updated_at: '2026-08-18T06:56:26.197Z'
 ## Summary
 `specdive install --target <cursor|opencode>` wires the
 specdive MCP server into a host AI assistant's config file as a local
-(stdio) server and inserts the Spec Status Decision Rule and the
-commit-tagging instruction into `AGENTS.md` if those blocks are not
-already there. Does not write `.gitignore`.
+(stdio) server and inserts the Spec Status Decision Rule, the
+commit-tagging instruction, and the project-management sync instruction
+into `AGENTS.md` if those blocks are not already there. Does not write
+`.gitignore`.
 
 ## Capabilities
 - Supports two targets with their distinct config shapes/locations:
@@ -47,8 +48,9 @@ already there. Does not write `.gitignore`.
 - Exposes `readSpecdiveCommand` / `targetFilePath` helpers used by the
   status check.
 - Inserts marked blocks into `AGENTS.md` if the start marker is absent:
-  Spec Status Decision Rule (`<!-- specdive:status-rule -->`) and
-  commit tagging (`<!-- specdive:commit-tag -->`). Re-install leaves an
+  Spec Status Decision Rule (`<!-- specdive:status-rule -->`),
+  commit tagging (`<!-- specdive:commit-tag -->`), and project-management
+  sync (`<!-- specdive:pm-sync -->`). Re-install leaves an
   existing block unchanged so the project can edit the default. The
   agent file is committed, not gitignored.
 
@@ -76,3 +78,7 @@ already there. Does not write `.gitignore`.
   `AGENTS.md` (insert-if-missing) so Cursor/OpenCode call
   `specdive_tag_commit` after every git commit.
 - 2026-08-17: Install no longer appends the host config to `.gitignore`.
+- 2026-08-19: Install also injects a pm-sync instruction into
+  `AGENTS.md` (insert-if-missing) so the assistant updates ClickUp
+  (or similar) when starting or completing a spec, if a connector is
+  available.

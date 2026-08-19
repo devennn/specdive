@@ -1,7 +1,7 @@
 import type { CallToolResult, TextContent } from "@modelcontextprotocol/sdk/types.js";
 import { getGuard, getSpecdiveDir, getUpdatedBy } from "./context.js";
 import { initSpecdive, updateSpecdive } from "../scaffold.js";
-import { injectCommitTag, injectStatusRule } from "../cli/agent-instructions.js";
+import { injectCommitTag, injectPmSync, injectStatusRule } from "../cli/agent-instructions.js";
 import { createSpec, updateStatus, logProgress } from "../specs/write.js";
 import { tagCommit } from "../specs/tag-commit.js";
 import { isInitialized, listSummaries } from "../specs/read.js";
@@ -58,6 +58,7 @@ export function handleUpdate(): CallToolResult {
     const res = updateSpecdive(process.cwd());
     injectStatusRule();
     injectCommitTag();
+    injectPmSync();
     return ok({ specdiveDir: res.specdiveDir, instructions: res.instructions });
   } catch (err) {
     return fail(messageOf(err));

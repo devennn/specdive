@@ -38,14 +38,17 @@ never touches `config.yml` or specs.
   write `.gitignore`.
 - `update` / `specdive_update` rewrites only `INSTRUCTIONS.md` to the
   current contract and injects missing `AGENTS.md` blocks (status-rule,
-  commit-tag). Insert-if-missing; user-edited blocks are left unchanged.
+  commit-tag, pm-sync). Insert-if-missing; user-edited blocks are left
+  unchanged.
 - The CLI `init` optionally wires the MCP server via an interactive target
   prompt (`cursor` / `opencode`) or `--target`, then prints
   next steps; non-TTY shells skip the prompt gracefully.
 - Returns the `INSTRUCTIONS` content so the MCP tool can surface it to the
   host assistant in-context.
 - `INSTRUCTIONS.md` includes the Spec Status Decision Rule (`done` vs
-  `backlog`), the commit-tagging instruction, and tells the assistant to
+  `backlog`), the commit-tagging instruction, the project-management
+  sync instruction (update ClickUp/Linear/etc. if a connector is
+  available; otherwise proceed), and tells the assistant to
   call `specdive_update` (not `specdive_init`) when `.specdive/` already
   exists. MCP init does not write a host `AGENTS.md` (no provider). CLI
   `init --target` injects those blocks via install; `update` injects them
@@ -78,3 +81,6 @@ never touches `config.yml` or specs.
   exists. `update` refreshes INSTRUCTIONS.md and missing AGENTS.md
   blocks only.
 - 2026-08-17: `init` no longer writes `.specdive/.gitignore`.
+- 2026-08-19: INSTRUCTIONS.md and `update` gained a project-management
+  sync instruction: when starting or completing a spec, update ClickUp
+  (or similar) if a connector is available; otherwise proceed.

@@ -74,3 +74,5 @@ spec writes and returns structured tool results.
   `.specdive/` already exists.
 - 2026-08-18: Added `specdive_health` so the assistant can ping the
   server and get version plus whether `.specdive/` is initialized.
+- 2026-08-19: `specdive_update` also injects the pm-sync AGENTS.md
+  block (insert-if-missing).

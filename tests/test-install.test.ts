@@ -79,7 +79,7 @@ test("re-install forces the launch command back to current (stale command clobbe
   });
 });
 
-test("install injects the status rule and commit-tag instruction into AGENTS.md", () => {
+test("install injects the status rule, commit-tag, and pm-sync instructions into AGENTS.md", () => {
   withRepo(() => {
     installCommand("cursor");
     const agents = readFileSync("AGENTS.md", "utf8");
@@ -89,6 +89,9 @@ test("install injects the status rule and commit-tag instruction into AGENTS.md"
     assert.match(agents, /<!-- specdive:commit-tag -->/);
     assert.match(agents, /specdive_tag_commit/);
     assert.match(agents, /<!-- \/specdive:commit-tag -->/);
+    assert.match(agents, /<!-- specdive:pm-sync -->/);
+    assert.match(agents, /project-management/);
+    assert.match(agents, /<!-- \/specdive:pm-sync -->/);
   });
 });
 
@@ -100,6 +103,7 @@ test("install appends the status rule to an existing AGENTS.md", () => {
     assert.match(agents, /Do not break the build/);
     assert.match(agents, /<!-- specdive:status-rule -->/);
     assert.match(agents, /<!-- specdive:commit-tag -->/);
+    assert.match(agents, /<!-- specdive:pm-sync -->/);
   });
 });
 
@@ -143,6 +147,7 @@ test("re-install adds commit-tag when only the status rule is present", () => {
     assert.match(agents, /Custom: only mark done after a demo/);
     assert.match(agents, /<!-- specdive:commit-tag -->/);
     assert.match(agents, /specdive_tag_commit/);
+    assert.match(agents, /<!-- specdive:pm-sync -->/);
   });
 });
 
@@ -164,6 +169,54 @@ test("re-install does not overwrite a user-edited commit-tag block", () => {
     const agents = readFileSync("AGENTS.md", "utf8");
     assert.match(agents, /Custom: tag only FEAT-001/);
     const starts = agents.match(/<!-- specdive:commit-tag -->/g) ?? [];
+    assert.equal(starts.length, 1, "must not duplicate the block");
+  });
+});
+
+test("re-install adds pm-sync when only status rule and commit-tag are present", () => {
+  withRepo(() => {
+    writeFileSync(
+      "AGENTS.md",
+      [
+        "<!-- specdive:status-rule -->",
+        "## Spec Status Decision Rule",
+        "Custom: only mark done after a demo.",
+        "<!-- /specdive:status-rule -->",
+        "",
+        "<!-- specdive:commit-tag -->",
+        "## Specdive commit tagging",
+        "Custom: tag only FEAT-001.",
+        "<!-- /specdive:commit-tag -->",
+        "",
+      ].join("\n"),
+      "utf8",
+    );
+    installCommand("cursor");
+    const agents = readFileSync("AGENTS.md", "utf8");
+    assert.match(agents, /Custom: tag only FEAT-001/);
+    assert.match(agents, /<!-- specdive:pm-sync -->/);
+    assert.match(agents, /project-management/);
+  });
+});
+
+test("re-install does not overwrite a user-edited pm-sync block", () => {
+  withRepo(() => {
+    installCommand("cursor");
+    writeFileSync(
+      "AGENTS.md",
+      [
+        "<!-- specdive:pm-sync -->",
+        "## Specdive project-management sync",
+        "Custom: ClickUp list 123 only.",
+        "<!-- /specdive:pm-sync -->",
+        "",
+      ].join("\n"),
+      "utf8",
+    );
+    installCommand("cursor");
+    const agents = readFileSync("AGENTS.md", "utf8");
+    assert.match(agents, /Custom: ClickUp list 123 only/);
+    const starts = agents.match(/<!-- specdive:pm-sync -->/g) ?? [];
     assert.equal(starts.length, 1, "must not duplicate the block");
   });
 });

@@ -1,4 +1,4 @@
-import { injectCommitTag, injectStatusRule } from "./agent-instructions.js";
+import { injectCommitTag, injectPmSync, injectStatusRule } from "./agent-instructions.js";
 import { updateSpecdive } from "../scaffold.js";
 import { EXIT_SUCCESS, EXIT_CONFIG } from "./exit-codes.js";
 
@@ -12,6 +12,7 @@ export function updateCommand(): number {
     console.log(`[specdive] refreshed ${res.specdiveDir}/INSTRUCTIONS.md`);
     logInject(injectStatusRule(), "status rule");
     logInject(injectCommitTag(), "commit-tag instruction");
+    logInject(injectPmSync(), "pm-sync instruction");
     return EXIT_SUCCESS;
   } catch (err) {
     console.error(

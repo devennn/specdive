@@ -133,8 +133,9 @@ log them — the assistant must be able to react to a failed write.
      does not add that file to `.gitignore`; the user decides whether to
      commit it.
   2. marked blocks in `AGENTS.md` (Cursor, OpenCode), inserted only if
-     absent so user edits persist: `<!-- specdive:status-rule -->` and
-     `<!-- specdive:commit-tag -->`. This file is committed, not gitignored.
+     absent so user edits persist: `<!-- specdive:status-rule -->`,
+     `<!-- specdive:commit-tag -->`, and `<!-- specdive:pm-sync -->`.
+     This file is committed, not gitignored.
 
 ## Spec writing rules
 
@@ -192,6 +193,23 @@ run git; you pass the SHA you just created.
 
 Edit this block to change how this project tags commits. Re-install will not overwrite it.
 <!-- /specdive:commit-tag -->
+
+<!-- specdive:pm-sync -->
+## Specdive project-management sync
+
+When you start or complete work on a spec (call `specdive_update_status`
+and `specdive_log_progress`), also update the matching task in the
+user's other project-management software (ClickUp, Linear, Jira, GitHub
+Issues, or similar) if a connector is already available in this session
+— an MCP server, CLI, or other tool the host has connected.
+
+If no such tool is connected, or you cannot find a matching task,
+proceed with the specdive write and do not ask the user to connect a
+tracker. Do not fail the task because the tracker update failed.
+specdive does not talk to those tools; you do.
+
+Edit this block to change how this project syncs with other trackers. Re-install will not overwrite it.
+<!-- /specdive:pm-sync -->
 
 ## MCP rules
 

@@ -31,7 +31,9 @@
 
 - Ongoing work: when you finish or start a meaningful chunk of work on
   a feature, call specdive_update_status and specdive_log_progress.
-  Don't ask the user to do this manually.
+  Don't ask the user to do this manually. If a project-management
+  connector is available in this session (ClickUp, Linear, Jira, etc.),
+  update the matching remote task too. If none is connected, proceed.
 
 - After every git commit you create, call specdive_tag_commit with the
   new SHA, the commit subject, the author, the commit time (ISO-8601),
@@ -68,6 +70,21 @@ Log the specific gap in the Progress Log.
 The line: Polish/enhancement = Known Issues → done. Breaks-in-normal-use → backlog.
 
 If the host AGENTS.md contains a `<!-- specdive:status-rule -->` block, follow that over this default.
+
+## Specdive project-management sync
+
+When you start or complete work on a spec (call `specdive_update_status`
+and `specdive_log_progress`), also update the matching task in the
+user's other project-management software (ClickUp, Linear, Jira, GitHub
+Issues, or similar) if a connector is already available in this session
+— an MCP server, CLI, or other tool the host has connected.
+
+If no such tool is connected, or you cannot find a matching task,
+proceed with the specdive write and do not ask the user to connect a
+tracker. Do not fail the task because the tracker update failed.
+specdive does not talk to those tools; you do.
+
+If the host AGENTS.md contains a `<!-- specdive:pm-sync -->` block, follow that over this default.
 
 ## Spec file layout
 

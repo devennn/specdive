@@ -24,8 +24,14 @@ commits:
     message: Add a History view of tagged commits as the default PM page.
     author: Deven Yantis
     committed_at: '2026-08-18T14:55:13+08:00'
+  - sha: f8a718470f1d6a1d3c99a302c34bfc01e4849aa1
+    message: >-
+      Inject a pm-sync instruction so assistants update external trackers on
+      spec start/complete.
+    author: Deven Yantis
+    committed_at: '2026-08-19T09:44:13+08:00'
 updated_by: cursor
-updated_at: '2026-08-18T06:56:26.198Z'
+updated_at: '2026-08-19T01:44:23.467Z'
 ---
 ## Summary
 The stdio MCP server that exposes specdive's write-side tools to an
